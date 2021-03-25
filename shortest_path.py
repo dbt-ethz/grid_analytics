@@ -1,4 +1,3 @@
-#!/usr/bin/env python`
 # -*- coding: utf-8 -*-
 __author__     = ['Benjamin Dillenburger','Remy Clemente']
 __copyright__  = 'Copyright 2021 / Digital Building Technologies DBT / ETH Zurich'
@@ -204,7 +203,7 @@ class Shortestpath:
     centralityMap = np.zeros(self.obstacle_map.size, dtype=np.int)
     
     # Ground cells
-    vCells = self.visible_cells.flatten()
+    vCells = np.argwhere(self.obstacle_map.flatten()==0).flatten()
     
     for k in vCells:
       dist = self.get_minimal_spanningtree(k)[0]
@@ -252,7 +251,7 @@ class Shortestpath:
     trafficMap = np.zeros(self.obstacle_map.size,dtype=np.int)
 
     # Ground cells
-    vCells = self.visible_cells.flatten()
+    vCells = np.argwhere(self.obstacle_map.flatten()==0).flatten()
     
     # Update traffic map
     for k in vCells:

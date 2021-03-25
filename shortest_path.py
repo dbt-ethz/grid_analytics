@@ -201,7 +201,7 @@ class Shortestpath:
     -------
     centralityMap : 1D or 2D numpy array with centrality percentage for each cell
     """
-    centralityMap = np.zeros(self.obstacle_map.size, dtype=np.int)
+    centralityMap = np.zeros(self.obstacle_map.size, dtype=np.float32)
     
     # Ground cells
     vCells = np.argwhere(self.obstacle_map.flatten() == 0).flatten()

@@ -1,4 +1,3 @@
-#!/usr/bin/env python`
 # -*- coding: utf-8 -*-
 __author__     = ['Benjamin Dillenburger','Remy Clemente']
 __copyright__  = 'Copyright 2021 / Digital Building Technologies DBT / ETH Zurich'
@@ -11,16 +10,14 @@ class Isovist:
   """A class to compute isovist using numpy
   (https://en.wikipedia.org/wiki/Isovist)
   (https://numpy.org/)
-  
 
   Attributes 
   ----------
   obstacle_map : 2D numpy array 
       -1 for collision and 0 for ground
   
-
   Methods
-  ----------
+  -------
   isovist_from_point(startIndex, youAreHere=False, format=0)
       Create a 1D or 2D isovist numpy array from a starting point
   -
@@ -28,6 +25,7 @@ class Isovist:
       Create a 1D or 2D isovist numpy array with visibility percentage of each cell
   """
   
+
   def __init__(self, obstacle_map):
     self.obstacle_map = obstacle_map
     self.visible_cells = np.argwhere(obstacle_map==0)
@@ -43,10 +41,9 @@ class Isovist:
       youAreHere : Boolean to highlight pov with value -2
       format : 0 for 1D numpy array ouput /  1 for 2D numpy array output
       
-      
       Returns
-      ----------
-      isovist_area = Isovist Map with -1 collision, 0 non-visible ground, 1 visible ground
+      -------
+      isovist_area : Isovist Map with -1 collision, 0 non-visible ground, 1 visible ground
       """
       isovist_area = np.copy(self.obstacle_map)
       
@@ -78,12 +75,12 @@ class Isovist:
     
     Parameters
     ----------
-    format = 0 for 1D numpy array ouput / = 1 for 2D numpy array output
+    format : 0 for 1D numpy array ouput / = 1 for 2D numpy array output
     
 
     Returns
-    ----------
-    isovist_map = Isovist for each cell in a 1D or 2D numpy array 
+    -------
+    isovist_map : Isovist for each cell in a 1D or 2D numpy array 
     """
     
     isovist_map = np.copy(self.obstacle_map)
@@ -111,20 +108,19 @@ class Isovist:
     elif format == 1:
         return isovist_map
   
-
+  
   def visibility_ray(self, startIndex, endIndex, visibility_map):
     """
     Bresenham's Line Algorithm using np array to detect collision
     
     Parameters
     ----------
-    startIndex = (x,y) corrdinates of ray's starting point
-    endIndex = (x,y) coordinates of ray's ending point
-    visibility_map = 2D numpy array to be updated
-    
+    startIndex : (x,y) corrdinates of ray's starting point
+    endIndex : (x,y) coordinates of ray's ending point
+    visibility_map : 2D numpy array to be updated
 
     Returns
-    ----------
+    -------
     visibility_map updated with the shooted ray
     """
     

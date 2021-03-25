@@ -1,59 +1,59 @@
+#!/usr/bin/env python`
+# -*- coding: utf-8 -*-
+__author__     = ['Benjamin Dillenburger','Remy Clemente']
+__copyright__  = 'Copyright 2021 / Digital Building Technologies DBT / ETH Zurich'
+__license__    = 'MIT License'
+__email__      = ['<dbt@arch.ethz.ch>']
+
 import numpy as np
-import matplotlib.pyplot as plt
 
 class Shortestpath:
-  """
-  Graph analytic's class to compute betweenness centrality using numpy
+  """Graph analytic's class to compute betweenness centrality using numpy
   (https://en.wikipedia.org/wiki/Betweenness_centrality)
   (https://numpy.org/)
-  -
-  / Attributes 
-  ------------
+  
+
+  Attributes 
+  ----------
   obstacle_map : 2D numpy array 
       -1 for collision and 0 for ground
-  -
-  / Methods
-  ------------
+  
+  Methods
+  ----------
   get_minimal_spanningtree(startIndex, youAreHere=False, format=0)
+      Dijkstra's algorithm to compute distances from one cell and minimal spanning tree
   -
   get_shortest_path(startIndex, endIndex, youAreHere=False, format=0)
+      Shortest path between two cells
   -
   get_centrality(format=0)
+      Centrality map
   -
   get_traffic(format=0)
+      Traffic map
   """
   
-  
+
   def __init__(self, obstacle_map):
     self.obstacle_map = obstacle_map
     self.visible_cells = np.argwhere(obstacle_map==0)
     self.nbarr = self.get_1D_neighbors()
   
-
-  ####
   
   def indexFromXY(self, x, y, nY):
     """
-    Return 1D index from a 2D array
-    -
-    / Input
-    x = 
-    y = 
-    nY = 
+    1D index from a 2D array
     """
     return x*nY + y
   
-  ####
   
   def get_1D_neighbors(self):
     """
-    Return 1D numpy array with 8 neighbor cell's keys
-    -
-    / Input
-    obstacle_map = 2D numpy array with -1 for collision and 0 for ground
-    -
-    / Output
-    nb = 1D numpy array (with (map.size,8) as shape) with 8 neighbor cell's 1D keys
+    Compute 1D np array with 8 neighbor cell's keys from 2D np array
+    
+    Returns
+    -------
+    nb : 1D numpy array (with (map.size,8) as shape) with 8 neighbor cell's 1D keys
     """
     adjacents = [(-1,-1), (-1,0), (-1,1), (0,1), (1,1), (1,0), (1,-1), (0,-1)]
     
@@ -67,23 +67,21 @@ class Shortestpath:
                     nb[index_1D, i] = self.indexFromXY(xpos+x, ypos+y, self.obstacle_map.shape[1])
     return nb
   
-  #####
   
   def get_minimal_spanningtree(self, startIndex, youAreHere=False, format=0):
     """
-    Dijkstra's algorithm to compute distance from one cell to all others
-    and minimal spanning tree
-    -
-    / Input
-    startIndex = 1D key of start cell (x*nY + y)
-    obstacle_map = 2D numpy array with -1 for collision and 0 for ground
-    nbarr = 1D numpy array with 8 neighbor cell's indexes for ground / -1 for collision
-    youAreHere = Boolean to highlight pov by newMap[start] = -2
-    format = 0 for 1D numpy array / = 1 for 2D numpy array
-    -
-    / Output
-    distArr = 1D or 2D numpy array with distances from start cell
-    predArr = 1D or 2D numpy array with closest coordinates from start cell (minimal spanning tree)
+    Dijkstra's algorithm to compute distances from one cell and minimal spanning tree
+    
+    Parameters
+    ----------
+    startIndex : 1D key of start cell (x*nY + y)
+    youAreHere : Boolean to highlight pov by newMap[start] = -2
+    format : 0 for 1D numpy array / 1 for 2D numpy array
+    
+    Returns
+    -------
+    distArr : 1D or 2D numpy array with distances from start cell
+    predArr : 1D or 2D numpy array with closest coordinates from start cell (minimal spanning tree)
     """
     
     # Vectorized shortest distance
@@ -139,11 +137,21 @@ class Shortestpath:
         
         return distArr, p
   
-  #####
   
   def get_shortest_path(self, startIndex, endIndex, youAreHere=False, format=0):
     """
-
+    Shortest path between two cells
+    
+    Parameters
+    ----------
+    startIndex : 1D key of start cell
+    endIndex : 1D key of end cell
+    youAreHere : Boolean to highlight pov by newMap[start] = -2
+    format : 0 for 1D numpy array / 1 for 2D numpy array
+    
+    Returns
+    -------
+    visibility_map updated with the shooted ray
     """
     shortestPath_map = np.copy(self.obstacle_map.flatten())
     
@@ -156,19 +164,20 @@ class Shortestpath:
     elif format == 1:
         return np.reshape(shortestPath_map, self.obstacle_map.shape)
   
-  #####
   
   def get_path(self, startIndex, endIndex, predArr, visible_map):
     """
     Find path between two cells based on minimim spanning tree
-    -
-    / Input
-    startIndex = 1D key of start cell
-    endIndex = 1D key of end cell
-    predArr = 1D numpy array with closest coordinates from startIndexes
-    visible_map = 1D numpy array with -1 for collision and 0 for ground
-    -
-    / Output
+    
+    Parameters
+    ----------
+    startIndex : 1D key of start cell
+    endIndex : 1D key of end cell
+    predArr : 1D numpy array with closest coordinates from startIndexes
+    visible_map : 1D numpy array with -1 for collision and 0 for ground
+    
+    Returns
+    -------
     Update visible_map with 1 for path cells, 0 for ground and -1 for collision
     """
     visible_map[endIndex] += 1
@@ -179,18 +188,18 @@ class Shortestpath:
         v = predArr[v]
     visible_map[startIndex] += 1
   
-  #####
   
   def get_centrality(self, format=0):
     """
     Return centrality map
-    -
-    / Input
-    obstacle_map = 2D numpy array with -1 for collision and 0 for ground
-    format = 0 for 1D numpy array / = 1 for 2D numpy array
-    -
-    / Output
-    centralityMap = 1D or 2D numpy array with centrality percentage for each cell
+    
+    Parameters
+    ----------
+    format : 0 for 1D numpy array / 1 for 2D numpy array
+    
+    Returns
+    -------
+    centralityMap : 1D or 2D numpy array with centrality percentage for each cell
     """
     centralityMap = np.zeros(self.obstacle_map.size, dtype=np.int)
     
@@ -206,39 +215,38 @@ class Shortestpath:
     elif format == 1:
       return np.reshape(centralityMap, self.obstacle_map.shape)
   
-  #####
-
+  
   def get_cell_traffic(self, startIndex, traffic_map):
     """
     Return traffic of a specific cell
-    -
-    / Input
-    startIndex = 1D 
-    traffic_map = 
-    -
-    / Output
+    
+    Parameters
+    ----------
+    startIndex : 1D key of start cell
+    traffic_map : 1D numpy array
+    
+    Returns
+    -------
     traffic_map updated from startIndex cell traffic
     """    
     pred = self.get_minimal_spanningtree(startIndex)[1]
     pr = np.concatenate(np.argwhere(pred > 0))
     
     for p in pr:
-        # self.get_shortest_path(startIndex, p, pred, traffic_map)
         self.get_path(startIndex, p, pred, traffic_map)
   
-  #####
   
   def get_traffic(self, format=0):
     """
-
-    -
-    / Input
-    obstacle_map = 2D numpy array with -1 for collision and 0 for ground
-    nbarr = 
-    format = 0 for 1D numpy array / = 1 for 2D numpy array
-    -
-    / Output
-    trafficMap = 2D numpy array with road traffic
+    Traffic map
+    
+    Parameters
+    ----------
+    format : 0 for 1D numpy array / 1 for 2D numpy array
+    
+    Returns
+    -------
+    trafficMap : 1D or 2D numpy array with traffic values
     """
     
     trafficMap = np.zeros(self.obstacle_map.size,dtype=np.int)

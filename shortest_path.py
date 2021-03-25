@@ -208,7 +208,8 @@ class Shortestpath:
     
     for k in vCells:
       dist = self.get_minimal_spanningtree(k)[0]
-      centralityMap[k] = dist[dist > 0].sum() / np.sum(dist > 0)
+    #   centralityMap[k] = dist[dist > 0].sum() / np.sum(dist > 0)
+    centralityMap[k] = dist[dist>0].sum() / self.visible_cells.size
     
     if format == 0:
       return centralityMap

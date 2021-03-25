@@ -204,12 +204,11 @@ class Shortestpath:
     centralityMap = np.zeros(self.obstacle_map.size, dtype=np.int)
     
     # Ground cells
-    vCells = np.argwhere(self.obstacle_map.flatten() == 0).flatten()
+    vCells = self.visible_cells.flatten()
     
     for k in vCells:
       dist = self.get_minimal_spanningtree(k)[0]
-    #   centralityMap[k] = dist[dist > 0].sum() / np.sum(dist > 0)
-    centralityMap[k] = dist[dist>0].sum() / self.visible_cells.size
+      centralityMap[k] = dist[dist > 0].sum() / np.sum(dist > 0)
     
     if format == 0:
       return centralityMap
@@ -253,7 +252,7 @@ class Shortestpath:
     trafficMap = np.zeros(self.obstacle_map.size,dtype=np.int)
 
     # Ground cells
-    vCells = np.argwhere(self.obstacle_map.flatten()==0).flatten()
+    vCells = self.visible_cells.flatten()
     
     # Update traffic map
     for k in vCells:

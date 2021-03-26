@@ -3,7 +3,7 @@ import numpy as np
 
 def calculate_2d_number_of_facades(cells):
     """
-    Returns the amount of free facades of the floorplan.
+    Returns the amount of free facades of a floorplan.
     """
     pass
 
@@ -15,11 +15,15 @@ def calculate_2d_compactness(cells):
     pass
 
 
-def calculate_2d_shortest_distance_from_perimeter(cells):
+def calculate_2d_room_adjacencies(cells, n):
+    """
+    Returns the amount of cells that have n neighbors
+    """
     pass
 
 
-def calculate_2d_patios(cells):
+def calculate_3d_patios(cells):
+
     pass
 
 

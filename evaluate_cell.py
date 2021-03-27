@@ -2,7 +2,6 @@ import numpy as np
 
 
 def _find_2d_neighbors(matrix, rowNumber, colNumber):
-
     """
     Returns the 4 neighbors of a cell in a 2d numpy array if they exist.
 
@@ -45,18 +44,17 @@ def calculate_number_of_facades(cells):
 
     total = 0
 
-    for lev in range(0, cells.shape[2]):
-        for col in range(0, cells.shape[1]):
-            for row in range(0, cells.shape[0]):
-                #only evaluate solid voxels
-                if cells[row, col, lev] > 0:
-                    in_2d = cells[:, :, lev].reshape(
-                        (cells.shape[0], cells.shape[1]))
-                    neighbors = _find_2d_neighbors(in_2d, row, col)
-                    total += (4-len(neighbors))
-                    for n in neighbors:
-                        if n == 0:
-                            total += 1
+    for row, col, lev in np.ndindex(cells.shape):
+
+        # only evaluate solid voxels
+        if cells[row, col, lev] > 0:
+            in_2d = cells[:, :, lev].reshape(
+                (cells.shape[0], cells.shape[1]))
+            neighbors = _find_2d_neighbors(in_2d, row, col)
+            total += (4-len(neighbors))
+            for n in neighbors:
+                if n == 0:
+                    total += 1
     return total
 
 

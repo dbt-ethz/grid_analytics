@@ -6,6 +6,7 @@ __email__      = ['<dbt@arch.ethz.ch>']
 
 import numpy as np
 
+
 class Isovist:
   """A class to compute isovist using numpy
   (https://en.wikipedia.org/wiki/Isovist)
@@ -28,46 +29,89 @@ class Isovist:
 
   def __init__(self, obstacle_map):
     self.obstacle_map = obstacle_map
-    self.visible_cells = np.argwhere(obstacle_map==0)
   
+  @property
+  def visible_cells(self):
+    return np.argwhere(self.obstacle_map==0)
+
+  @property
+  def invisible_cells(self):
+    return np.argwhere(self.obstacle_map==-1)
   
+  @property
+  def edges(self):
+    coords_arrs = np.mgrid[0:self.obstacle_map.shape[0], 0:self.obstacle_map.shape[1]]
+    edges = [np.concatenate([
+      arr[0,:-1],
+      arr[:-1,-1],
+      arr[-1,::-1],
+      arr[-2:0:-1,0]]) for arr in coords_arrs]
+    return edges
+
+  def cell_neighbors(self, cell_index):
+    x, y = cell_index
+    neighbors = [
+      (x-1, y),
+      (x, y-1),
+      (x+1, y),
+      (x, y+1)
+    ]
+
+    def out_of_boundary(index):
+      if index[0] < 0 or index[0] > self.obstacle_map.shape[0]-1 or index[1] < 0 or index[1] > self.obstacle_map.shape[1]-1:
+        return True
+      else:
+        return False
+    
+    neighbors = [nbr for nbr in neighbors if not out_of_boundary(nbr)]
+
+    return neighbors
+
+  def neighbors_map(self):
+    neighbors_map = np.zeros(self.obstacle_map.shape, dtype=np.int)
+
+    for cell in self.invisible_cells:
+      facade_count = 0
+      neighbors = self.cell_neighbors(cell)
+      for nbr in neighbors:
+        if self.obstacle_map[nbr[0], nbr[1]] == -1:
+          facade_count += 1
+      neighbors_map[cell[0], cell[1]] = facade_count
+    
+    return neighbors_map
+
+  def facade_map(self):
+    return 4 - self.neighbors_map()
+
   def isovist_from_point(self, startIndex, youAreHere=False, format=0):
-      """
-      Create a 2D or 1D isovist numpy array from a starting point
-      
-      Parameters
-      ----------
-      startIndex : pov point (x,y)
-      youAreHere : Boolean to highlight pov with value -2
-      format : 0 for 1D numpy array ouput /  1 for 2D numpy array output
-      
-      Returns
-      -------
-      isovist_area : Isovist Map with -1 collision, 0 non-visible ground, 1 visible ground
-      """
-      isovist_area = np.copy(self.obstacle_map)
-      
-      # Edges cells
-      coords_arrs = np.mgrid[0:self.obstacle_map.shape[0], 0:self.obstacle_map.shape[1]]
-      edges = [np.concatenate([arr[0,:-1],
-                                arr[:-1,-1],
-                                arr[-1,::-1],
-                                arr[-2:0:-1,0]]) for arr in coords_arrs]
-      
-      # Shoot rays
-      for xEdg, yEdg in zip(edges[0], edges[1]):
-          self.visibility_ray(startIndex, (yEdg, xEdg), isovist_area)
-      
-      # Highlight pov
-      if youAreHere:
-          isovist_area[startIndex[1], startIndex[0]] = -2
-  
-      # Export options
-      if format == 0:
-          return isovist_area.flatten()
-      elif format == 1:
-          return isovist_area
-  
+    """
+    Create a 2D or 1D isovist numpy array from a starting point
+    
+    Parameters
+    ----------
+    startIndex : pov point (x,y)
+    youAreHere : Boolean to highlight pov with value -2
+    format : 0 for 1D numpy array ouput /  1 for 2D numpy array output
+    
+    Returns
+    -------
+    isovist_area : Isovist Map with -1 collision, 0 non-visible ground, 1 visible ground
+    """
+    isovist_area = np.copy(self.obstacle_map)
+    
+    # Shoot rays
+    for xEdg, yEdg in zip(self.edges[0], self.edges[1]):
+      self.visibility_ray(startIndex, (yEdg, xEdg), isovist_area)
+    
+    # Highlight pov
+    if youAreHere:
+        isovist_area[startIndex[1], startIndex[0]] = -2
+
+    # Export options
+    if format == 0:
+        return isovist_area.flatten()
+    elif format == 1:
+        return isovist_area
   
   def isovist_map(self, format=0):
     """
@@ -84,18 +128,11 @@ class Isovist:
     """
     
     isovist_map = np.copy(self.obstacle_map)
-    
-    # Edges cells
-    coords_arrs = np.mgrid[0:self.obstacle_map.shape[0], 0:self.obstacle_map.shape[1]]
-    edges = [np.concatenate([arr[0,:-1],
-                             arr[:-1,-1],
-                             arr[-1,::-1],
-                             arr[-2:0:-1,0]]) for arr in coords_arrs]
-    
+
     # Shoot rays and count enlightened cells
     povMap = np.zeros(self.obstacle_map.shape, dtype=np.int)
     for [startX, startY] in self.visible_cells:
-        for xEdg, yEdg in zip(edges[0], edges[1]):
+        for xEdg, yEdg in zip(self.edges[0], self.edges[1]):
             self.visibility_ray((startY, startX), (yEdg, xEdg), povMap)  
 
         # Percentage of visibility per cell

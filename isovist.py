@@ -68,7 +68,8 @@ class Isovist:
     return neighbors
 
   def neighbors_map(self):
-    neighbors_map = np.zeros(self.obstacle_map.shape, dtype=np.int)
+    # neighbors_map = np.zeros(self.obstacle_map.shape, dtype=np.int)
+    neighbors_map = np.ones(self.obstacle_map.shape, dtype=np.int) * -1
 
     for cell in self.invisible_cells:
       facade_count = 0

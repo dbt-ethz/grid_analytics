@@ -1,5 +1,6 @@
 import numpy as np
-from grid_analytics.isovist import Isovist
+# from grid_analytics.isovist import Isovist
+from .isovist import *
 
 def distanceSqr(x1, y1, z1, x2, y2, z2):
     dX = x2 - x1
@@ -54,7 +55,8 @@ def shadow_from_sun_ray(voxel_space, sun_vec_x, sun_vec_y, sun_vec_z):
 def analyze_3d_grid(model3d, analysis_type="facade", ray1 = (1,1,0) ):
 
     if analysis_type == "facade":
-        pass
+        model3d = model3d - 1
+
 
     elif analysis_type == "shadow":
 
@@ -63,14 +65,22 @@ def analyze_3d_grid(model3d, analysis_type="facade", ray1 = (1,1,0) ):
         array3d = shadow_map
 
     elif analysis_type == "visibility":
-
-        visibility_voxel = np.full((model3d.shape[0],model3d.shape[1],model3d.shape[2]),0)
-        for z in range(model3d.shape[2]):
-            visibility_map = model3d[:,:,z]
-            iso_map = Isovist(visibility_map)
-            visibility_map = iso_map.isovist_map_collision(format=1)
-            visibility_voxel[:, :, z] = visibility_map
-
-        array3d = visibility_voxel
+        array3d = visibility_voxel(model3d)
 
     return array3d
+
+
+def visibility_voxel(voxel_space):
+    
+    voxel_space = voxel_space * -1
+    
+    color = np.full((*voxel_space.shape,3),1)
+
+    visibility_voxel = np.full(voxel_space.shape,0)
+    for z in range(voxel_space.shape[2]):
+        map = voxel_space[:,:,z]
+        iso_map = ga.Isovist(map)
+        visibility_map = iso_map.isovist_map_collision(format=1)
+        visibility_voxel[:, :, z] = visibility_map
+
+    return visibility_voxel

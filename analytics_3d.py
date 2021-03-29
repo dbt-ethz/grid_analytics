@@ -1,5 +1,5 @@
 import numpy as np
-from grid_analytics import Isovist
+from grid_analytics.isovist import Isovist
 
 def distanceSqr(x1, y1, z1, x2, y2, z2):
     dX = x2 - x1

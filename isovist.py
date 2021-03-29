@@ -170,7 +170,6 @@ class Isovist:
                 self.visibility_ray((startY, startX), (yEdg, xEdg), povMap)
 
             # Percentage of visibility per cell
-            print(povMap)
             isovist_map[startX, startY] = (np.count_nonzero(povMap) / self.visible_cells.size) * 100
             povMap = np.zeros(self.obstacle_map.shape, dtype=np.int)
 

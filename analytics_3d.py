@@ -1,6 +1,6 @@
 import numpy as np
 # from grid_analytics.isovist import Isovist
-from .isovist import *
+from .isovist import Isovist
 
 def distanceSqr(x1, y1, z1, x2, y2, z2):
     dX = x2 - x1
@@ -79,7 +79,7 @@ def visibility_voxel(voxel_space):
     visibility_voxel = np.full(voxel_space.shape,0)
     for z in range(voxel_space.shape[2]):
         map = voxel_space[:,:,z]
-        iso_map = ga.Isovist(map)
+        iso_map = Isovist(map)
         visibility_map = iso_map.isovist_map_collision(format=1)
         visibility_voxel[:, :, z] = visibility_map
 

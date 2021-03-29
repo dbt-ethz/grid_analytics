@@ -61,7 +61,7 @@ def analyze_3d_grid(model3d, analysis_type="facade", ray1 = (1,1,0) ):
 
         array3d = shadow_map
 
-    elif analysis_type == "isovist":
+    elif analysis_type == "visibility":
         pass
 
     return array3d

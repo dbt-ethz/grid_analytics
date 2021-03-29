@@ -84,3 +84,18 @@ def visibility_voxel(voxel_space):
         visibility_voxel[:, :, z] = visibility_map
 
     return visibility_voxel
+
+def facade_voxel(voxel_space):
+    voxel_space = voxel_space * -1
+    
+    color = np.full((*voxel_space.shape,3),1)
+
+    facade_analyse_voxel = np.full(voxel_space.shape,0)
+    for z in range(voxel_space.shape[2]):
+        map = voxel_space[:,:,z]
+        iso_map = Isovist(map)
+        facade_map = iso_map.facade_map()
+        facade_analyse_voxel[:, :, z] = facade_map
+
+    return facade_analyse_voxel
+

@@ -1,4 +1,5 @@
 import numpy as np
+from grid_analytics import Isovist
 
 def distanceSqr(x1, y1, z1, x2, y2, z2):
     dX = x2 - x1
@@ -65,7 +66,7 @@ def analyze_3d_grid(model3d, analysis_type="facade", ray1 = (1,1,0) ):
 
         for z in range(model3d.shape[2]):
             visibility_map = model3d[:,:,z]
-            iso_map = ga.Isovist(visibility_map)
+            iso_map = Isovist(visibility_map)
             visibility_map = iso_map.isovist_map_collision(format=1)
             visibility_voxel[:, :, z] = visibility_map
 

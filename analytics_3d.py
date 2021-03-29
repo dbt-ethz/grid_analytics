@@ -50,14 +50,15 @@ def shadow_from_sun_ray(voxel_space, sun_vec_x, sun_vec_y, sun_vec_z):
     return shadow_space
 
 
-def analyze_3d_grid(model3d, analysis_type="facade", ray = (1,1,-1)):
+def analyze_3d_grid(model3d, analysis_type="facade", ray1 = (1,1,0), ray2 = (1,1,-1) ):
 
     if analysis_type == "facade":
         pass
 
     elif analysis_type == "shadow":
 
-        shadow_map = shadow_from_sun_ray(model3d, ray[0], ray[1], ray[2])
+        shadow_map=shadow_from_sun_ray(voxel_space,ray1[0],ray1[1],ray1[2])
+        shadow_map+=shadow_from_sun_ray(voxel_space,ray2[0],ray2[1],ray2[2])
 
         array3d = shadow_map
 

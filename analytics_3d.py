@@ -1,4 +1,4 @@
-
+import numpy as np
 
 def distanceSqr(x1, y1, z1, x2, y2, z2):
     dX = x2 - x1

@@ -14,5 +14,10 @@
 # array = np.ones((3, 3), dtype=int)
 # array = 4 - array
 # print(array)
-import isovist
-print(1)
+import numpy as np
+
+array = np.array([0,1,2])
+print(type(array))
+print(array.T)
+array.data *= -1
+print(array.T)

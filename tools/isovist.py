@@ -7,6 +7,9 @@ __email__      = ['<dbt@arch.ethz.ch>']
 import numpy as np
 
 
+__all__ = ['Isovist']
+
+
 class Isovist:
     """A class to compute isovist using numpy
     (https://en.wikipedia.org/wiki/Isovist)

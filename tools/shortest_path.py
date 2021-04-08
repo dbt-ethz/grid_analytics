@@ -6,6 +6,10 @@ __email__      = ['<dbt@arch.ethz.ch>']
 
 import numpy as np
 
+
+__all__ = ['Shortestpath']
+
+
 class Shortestpath:
   """Graph analytic's class to compute betweenness centrality using numpy
   (https://en.wikipedia.org/wiki/Betweenness_centrality)

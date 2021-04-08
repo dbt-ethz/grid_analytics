@@ -1,124 +1,215 @@
 
 import numpy as np
-# from .tools import Grid
 from .tools import Isovist
-from .tools import Shortest_path
+from .tools import Shortestpath
+from .tools import shadow_from_sun_ray
 
 
-# __all__ = ['Grid_analytics']
+__all__ = [
+    'analyse_isovist_map2D',
+    'analyse_isovist2D',
+    'analyse_shortestpath2D',
+    'analyse_centrality2D',
+    'analyse_neighbours',
+    'analyse_shadow',
+    'analyse_distances',
+    'analyse_voronoi'
+]
 
 
-def analyse_isovist2D(array):
+def analyse_isovist_map2D(array, mode='void'):
     """
     Analyses 2D visibility for any numpy array >= 2 Dimensions.
     If 3D, XY layers will be analysed
+    
+    Parameters
+    ----------
+    array: numpy ndarray
+        2D or 3D numpy array with 0 for void cells, 1 for solid cells
+    mode: string
+        string 'void' or 'solid'. 'void' returns isovist map of all void cells.
+        'solid' returns isovist map of all solid cells
 
+    Returns
+    -------
+    numpy array
+        2D or 3D numpy array of values representing how many cells are seen per cell.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> array = np.random.randint(2, size=(2, 4))
+    >>> isovist_map = analyse_isovist_map2D(array, mode='solid')
     """
     if array.ndim == 2:
-        return _analyse_isovist_xy(array)
+        return _analyse_isovist_map_xy(array, mode)
     
     elif array.ndim == 3:
         values = np.full(array.shape, 0)
         for z in range(values.shape[2]):
-            values[:, :, z] = _analyse_isovist_xy(array[:, :, z])    
+            values[:, :, z] = _analyse_isovist_map_xy(array[:, :, z], mode)    
         return values
 
     else:
         raise Exception('array has to be 2D or 3D!!')
 
 
-def _analyse_isovist_xy(array):
-    if array.ndim != 2:
-        raise Exception('array has to be 2D!!')
+def _analyse_isovist_map_xy(array, mode='void'):
+    isovist = Isovist(array * -1)
+
+    if mode == 'void':
+        return isovist.isovist_map(format=1)
+    elif mode == 'solid':
+        return isovist.isovist_map_collision(format=1)
     else:
-        isovist = Isovist(array * -1)
-    
-    return isovist.isovist_map()
+        return
 
 
-def analyse_visibility(array, view_pts=[]):
+def analyse_isovist2D(array, view_point=[0,0]):
+    """ Analyses 2D visibility for any numpy array >= 2 Dimensions.
+    Based on a given viewpoint.
+
+    Parameters
+    ----------
+    array: numpy ndarray
+        2D or 3D numpy array with 0 for void cells, 1 for solid cells
+    view_point: list or tuple
+        the index of the viewpoint in the array.
+        It needs to be inside of the array and have same dimension with the array
+
+    Returns
+    -------
+    numpy ndarray
+        2D or 3D numpy array with 1 for visible cells, 0 for invisible cells, -1 for solid cells.
+    """
     if array.ndim == 2:
-        return _analyse_visibility_xy(array, view_pts)
+        return _analyse_isovist_map_xy(array, view_point)
     
     elif array.ndim == 3:
-        values = np.full(array.shape, 0)
-        # view_pts_array = np.full(array.shape, 0)
-        # for pt in view_pts:
-        #     view_pts_array[pt] = 1
-        # for index in np.ndindex(view_pts_array.shape):
-
-        for z in range(values.shape[2]):
-            values[:, :, z] = _analyse_visibility_xy(array[:, :, z], view_pts[;, ;, z])    
-        return values
+        raise NotImplementedError
 
     else:
         raise Exception('array has to be 2D or 3D!!')
 
 
-def _analyse_visibility_xy(array, view_pts=[]):
-    if array.ndim != 2:
-        raise Exception('array has to be 2D!!')
-    else:
-        isovist = Isovist(array * -1)
-        visibility = np.full(array.shape, 0)
-        for pt in view_pts:
-            visibility_pt = isovist.isovist_from_point(pt, format=1)
-            visibility += visibility_pt
+def _analyse_isovist_xy(array, view_point):
+    isovist = Isovist(array * -1)
+    return isovist.isovist_from_point(view_point, format=1)
+
+
+def analyse_shortestpath2D(array, sp, ep):
+    """ Analyses the shortest path in a 2D numpy array.
     
-    return visibility
+    Parameters
+    ----------
+    array: numpy ndarray
+        2D or 3D numpy array with values of 0 and 1
+    sp: list or tuple
+        the index of the starting point in the array.
+        It needs to be inside of the array and have same dimension with the array
+    ep: list or tuple
+        the index of the ending point in the array.
+        It needs to be inside of the array and have same dimension with the array  
+    
+    Returns
+    -------
+    numpy ndarray
+        2D or 3D numpy array with 1 for path cells, 0 for the rest of void cells, -1 for solid cells.
+    """
+    if array.ndim == 2:
+        return _analyse_shortestpath_xy(array, sp, ep)
+    
+    elif array.ndim == 3:
+        raise NotImplementedError
+
+    else:
+        raise Exception('array has to be 2D or 3D!!')
 
 
 def _analyse_shortestpath_xy(array, sp, ep):
-    if array.ndim != 2:
-        raise Exception('array has to be 2D!!')
+    shortest_path = Shortestpath(array * -1)
+    return shortest_path.get_shortest_path(sp, ep, format=1)
+
+
+def analyse_centrality2D(array):
+    """
+    Return centrality map
+    
+    Parameters
+    ----------
+    array: numpy ndarray
+        2D or 3D numpy array with values of 0 and 1
+    
+    Returns
+    -------
+    numpy ndarray:
+        numpy array with centrality percentage for each cell
+    """
+    if array.ndim == 2:
+        return _analyse_centrality2D(array)
+    
+    elif array.ndim == 3:
+        raise NotImplementedError
+
     else:
-        shortest_path = Shortest_path(array)
+        raise Exception('array has to be 2D or 3D!!')
 
 
+def _analyse_centrality2D(array):
+    shortest_path = Shortestpath(array * -1)
+    return shortest_path.get_centrality(format=1)
 
 
-# class Grid_analytics(Grid):
-#     """
+def analyse_neighbours(array):
+    """
+    Analyses amount of nbs per cell per type for any 2D or 3D array
     
-#     Examples
-#     --------
-#     >>> from grid_analytics import Grid_analytics
-
-#     >>> voxel_space = np.random.randint(2, size=(3,5))
-#     >>> my_grid = Grid_analytics(voxel_space)
-#     >>> visbility_map = my_grid.analyse_visibility()
-#     >>> neighbours_map = my_grid.analyse_neighbours()
-#     """
-
-#     def __init__(self, voxel_map):
-#         super(Grid, self).__init__()
+    Parameters
+    ----------
+    array: numpy ndarray
+        2D or 3D numpy array with values of 0 and 1
     
-#     def analyse_isovist(self, pt):
-#         pass
+    Returns
+    -------
+    numpy ndarray:
+        numpy array with number of nbrs per cell
+    """
+    raise NotImplementedError
 
-#     def analyse_visibility(self):
-#         if self.obstacle_map.ndim == 2:
-#             raise Exception('array is not 3D!!!')
 
-#         else:
-#             values = np.full(self.obstacle_map.shape,0)
-#             for z in range(values.shape[2]):
-#                 values[:, :, z] = self.analyse_visibility_xy(z)
-            
-#             return values
+def _analyse_neighbours(array):
+    raise NotImplementedError
 
-#     def analyse_visibility_xy(self, z=0):
-#         if self.obstacle_map.ndim == 2:
-#             isovist = Isovist(self.obstacle_map * -1)
-        
-#         else:
-#             isovist = Isovist(self.obstacle_map[:,:,z] * -1)
+def analyse_shadow(array, light_vectors):
+    """Analyses shadow for any 3D array
 
-#         return isovist.isovist_map()
+    Parameters
+    ----------
+    array: numpy ndarray
+        2D or 3D numpy array with values of 0 and 1
+    light_vectors: list of vectors(tuple of 3 float)
+        vectors represent light direction
+    
+    Returns
+    -------
+    numpy ndarray:
+        numpy array with 1 as shadow, 0 as not in shadow
+    """
+    shadow_map = np.full(array.shape, 0)
+    for vec in light_vectors:
+        shadow_map += _analyse_shadow(array, vec)
 
-#     def analyse_shortestpath_xy(self, sp, ep):
-#         shortestpath = Shortest_path(self.obstacle_map)
-#         return shortestpath.get_shortest_path(sp, ep)
+
+def _analyse_shadow(array, light_vec):
+    return shadow_from_sun_ray(array, light_vec)
+
+
+def analyse_distances(array, **kwargs):
+    raise NotImplementedError
+
+
+def analyse_voronoi(array, **kwargs):
+    raise NotImplementedError
 
 
 if __name__ == '__main__':

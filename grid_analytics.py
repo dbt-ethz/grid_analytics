@@ -14,11 +14,11 @@ __all__ = [
     'analyse_isovist2D',
     'analyse_shortestpath2D',
     'analyse_centrality2D',
-    'analyse_neighbours',
     'analyse_shadow',
     'analyse_distances',
     'analyse_voronoi'
 ]
+
 
 def analyse_neighbours2D(array):
 
@@ -62,6 +62,7 @@ def analyse_neighbours2D(array):
         return values
     else:
         raise Exception('array has to be 2D or 3D!!')
+
 
 def analyse_neighbours3D(array):
 
@@ -230,26 +231,6 @@ def _analyse_centrality2D(array):
     return shortest_path.get_centrality(format=1)
 
 
-def analyse_neighbours(array):
-    """
-    Analyses amount of nbs per cell per type for any 2D or 3D array
-    
-    Parameters
-    ----------
-    array: numpy ndarray
-        2D or 3D numpy array with values of 0 and 1
-    
-    Returns
-    -------
-    numpy ndarray:
-        numpy array with number of nbrs per cell
-    """
-    raise NotImplementedError
-
-
-def _analyse_neighbours(array):
-    raise NotImplementedError
-
 def analyse_shadow(array, light_vectors):
     """Analyses shadow for any 3D array
 
@@ -265,9 +246,11 @@ def analyse_shadow(array, light_vectors):
     numpy ndarray:
         numpy array with 1 as shadow, 0 as not in shadow
     """
-    shadow_map = np.full(array.shape, 0)
+    shadow_map = np.zeros(array.shape)
     for vec in light_vectors:
         shadow_map += _analyse_shadow(array, vec)
+    
+    return shadow_map
 
 
 def _analyse_shadow(array, light_vec):

@@ -29,9 +29,12 @@ def get_neighbors2D(model_2d, row, col):
 
     return np.count_nonzero(neighbors)
 
-  def get_neighbors3D(model_3d, row, column, level):
+
+def get_neighbors3D(model_3d, row, column, level):
     
-    # returns the ammount of solid cells around a cell in a 3d
+    """
+    returns the ammount of solid cells around a cell in 3d
+    """
 
     #add a border of 0 around the 3d array
     model_3d = np.pad(model_3d, pad_width =1, mode ='constant', constant_values=0)

@@ -30,7 +30,7 @@ def get_neighbors2D(model_2d, row, col):
     return np.count_nonzero(neighbors)
 
 
-def get_neighbors3D(model_3d, row, column, level):
+def get_neighbors3D(model_3d, row, col, level):
     
     """
     returns the ammount of solid cells around a cell in 3d

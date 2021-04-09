@@ -57,7 +57,7 @@ def analyse_neighbours2D(array):
             # only evaluate solid voxels
             if array[x, y, z] > 0:
                 array_slice = array[:, :, z].reshape(array.shape[:2])
-                values[x][y][z] = get_neighbors2D(array, x, y)
+                values[x][y][z] = get_neighbors2D(array_slice, x, y)
 
         return values
     else:

@@ -79,7 +79,7 @@ def analyse_neighbours3D(array):
         for x, y, z in np.ndindex(array.shape):
             # only evaluate solid voxels
             if array[x, y, z] > 0:
-                values[x][y][z] = get_neighbors3D(array, x, y)
+                values[x][y][z] = get_neighbors3D(array, x, y, z)
 
     else:
         raise Exception('array has to be 2D or 3D!!')

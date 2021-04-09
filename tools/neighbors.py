@@ -46,17 +46,17 @@ def get_neighbors3D(model_3d, row, col, level):
     neighbors = []
     # face connected neighbors 
     # north
-    neighbors.append(model_2d[row-1][col][level])
+    neighbors.append(model_3d[row-1][col][level])
     # south
-    neighbors.append(model_2d[row+1][col][level])
+    neighbors.append(model_3d[row+1][col][level])
     # west
-    neighbors.append(model_2d[row][col-1][level])
+    neighbors.append(model_3d[row][col-1][level])
     # east
-    neighbors.append(model_2d[row][col+1][level])
+    neighbors.append(model_3d[row][col+1][level])
     # top
-    neighbors.append(model_2d[row][col][level+1])
+    neighbors.append(model_3d[row][col][level+1])
     # bottom
-    neighbors.append(model_2d[row][col][level-1])
+    neighbors.append(model_3d[row][col][level-1])
 
     #edge connected neighbors
 

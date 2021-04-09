@@ -81,6 +81,8 @@ def analyse_neighbours3D(array):
             if array[x, y, z] > 0:
                 values[x][y][z] = get_neighbors3D(array, x, y, z)
 
+        return values
+        
     else:
         raise Exception('array has to be 2D or 3D!!')
 

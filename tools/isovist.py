@@ -32,6 +32,8 @@ class Isovist:
     def __init__(self, obstacle_map):
         self.obstacle_map = obstacle_map
     
+    #something stupid
+
     @property
     def visible_cells(self):
         return np.argwhere(self.obstacle_map==0)

@@ -37,9 +37,9 @@ def analyse_neighbours2D(array):
 
     Examples
     --------
-    >>> import numpy as np
-    >>> array = np.random.randint(2, size=(2, 4))
-    >>> isovist_map = analyse_isovist_map2D(array, mode='solid')
+    >>>
+    >>>
+    >>>
     """
 
     if array.ndim == 2:
@@ -57,7 +57,7 @@ def analyse_neighbours2D(array):
             # only evaluate solid voxels
             if model[x, y, z] > 0:
                 model_slice = model[:, :, z].reshape(model.shape[:2])
-                values[x][y][z] = get_neighbors2D(array, x, y))
+                values[x][y][z] = get_neighbors2D(array, x, y)
 
     else:
         raise Exception('array has to be 2D or 3D!!')

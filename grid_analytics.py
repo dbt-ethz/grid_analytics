@@ -53,10 +53,10 @@ def analyse_neighbours2D(array):
     
     elif array.ndim == 3:
         values = np.full(array.shape, 0)
-        for x, y, z in np.ndindex(model.shape):
+        for x, y, z in np.ndindex(array.shape):
             # only evaluate solid voxels
-            if model[x, y, z] > 0:
-                model_slice = model[:, :, z].reshape(model.shape[:2])
+            if array[x, y, z] > 0:
+                array_slice = array[:, :, z].reshape(array.shape[:2])
                 values[x][y][z] = get_neighbors2D(array, x, y)
 
     else:
@@ -75,9 +75,9 @@ def analyse_neighbours3D(array):
     
     elif array.ndim == 3:
         values = np.full(array.shape, 0)
-        for x, y, z in np.ndindex(model.shape):
+        for x, y, z in np.ndindex(array.shape):
             # only evaluate solid voxels
-            if model[x, y, z] > 0:
+            if array[x, y, z] > 0:
                 values[x][y][z] = get_neighbors3D(array, x, y)
 
     else:

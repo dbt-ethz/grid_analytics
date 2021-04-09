@@ -5,7 +5,7 @@ except ImportError:
 
 import colorsys
 
-__all__ = ['color_numpyarray_from_value_numpyarray']
+__all__ = ['value_to_color']
 
 
 def math_map(value, fromMin, fromMax, toMin, toMax):
@@ -33,7 +33,7 @@ def color_hue_to_rgb(hue):
     return (col[0], col[1], col[2], 1)  # alpha = 100 %
 
 
-def color_numpyarray_from_value_numpyarray(value_array, min_value, max_value, min_hue, max_hue):
+def value_to_color(value_array, min_value, max_value, min_hue, max_hue):
     ndim = value_array.ndim
     new_shape = []
     for i in range(ndim):

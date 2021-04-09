@@ -59,6 +59,7 @@ def analyse_neighbours2D(array):
                 array_slice = array[:, :, z].reshape(array.shape[:2])
                 values[x][y][z] = get_neighbors2D(array, x, y)
 
+        return values
     else:
         raise Exception('array has to be 2D or 3D!!')
 

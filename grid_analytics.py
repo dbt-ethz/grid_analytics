@@ -3,9 +3,13 @@ import numpy as np
 from .tools import Isovist
 from .tools import Shortestpath
 from .tools import shadow_from_sun_ray
+from .tools import get_neighbors2D
+from .tools import get_neighbors3D
 
 
 __all__ = [
+    'analyse_neighbours2D',
+    'analyse_neighbours3D',
     'analyse_isovist_map2D',
     'analyse_isovist2D',
     'analyse_shortestpath2D',
@@ -15,6 +19,69 @@ __all__ = [
     'analyse_distances',
     'analyse_voronoi'
 ]
+
+def analyse_neighbours2D(array):
+
+    """
+    Returns the amount of 2d neighbours per cell for any 2D or 3D array
+    
+    Parameters
+    ----------
+    array: numpy ndarray
+        2D or 3D numpy array with 0 for void cells, 1 for solid cells
+
+    Returns
+    -------
+    numpy array
+        2D or 3D numpy array of values representing how many solid  are seen per cell.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> array = np.random.randint(2, size=(2, 4))
+    >>> isovist_map = analyse_isovist_map2D(array, mode='solid')
+    """
+
+    if array.ndim == 2:
+        values = np.full(array.shape, 0)
+        for x, y in np.ndindex(array.shape):
+            # only evaluate solid voxels
+            if array[x, y] > 0:
+                values[x][y] = get_neighbors2D(array, x, y)
+
+        return values
+    
+    elif array.ndim == 3:
+        values = np.full(array.shape, 0)
+        for x, y, z in np.ndindex(model.shape):
+            # only evaluate solid voxels
+            if model[x, y, z] > 0:
+                model_slice = model[:, :, z].reshape(model.shape[:2])
+                values[x][y][z] = get_neighbors2D(array, x, y))
+
+    else:
+        raise Exception('array has to be 2D or 3D!!')
+
+def analyse_neighbours3D(array):
+
+    if array.ndim == 2:
+        values = np.full(array.shape, 0)
+        for x, y in np.ndindex(array.shape):
+            # only evaluate solid voxels
+            if array[x, y] > 0:
+                values[x][y] = get_neighbors2D(array, x, y)
+
+        return values
+    
+    elif array.ndim == 3:
+        values = np.full(array.shape, 0)
+        for x, y, z in np.ndindex(model.shape):
+            # only evaluate solid voxels
+            if model[x, y, z] > 0:
+                values[x][y][z] = get_neighbors3D(array, x, y))
+
+    else:
+        raise Exception('array has to be 2D or 3D!!')
 
 
 def analyse_isovist_map2D(array, mode='void'):

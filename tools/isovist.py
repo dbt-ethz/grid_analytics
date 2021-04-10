@@ -20,6 +20,9 @@ class Isovist:
     obstacle_map : 2D numpy array 
             -1 for collision and 0 for ground
     
+    radius : float number 
+            reaching area defined by visibility limits
+    
     Methods
     -------
     isovist_from_point(startIndex, youAreHere=False, format=0)
@@ -29,8 +32,12 @@ class Isovist:
             Create a 1D or 2D isovist numpy array with visibility percentage of each cell
     """
 
-    def __init__(self, obstacle_map):
+    def __init__(self, obstacle_map, radius=None):
         self.obstacle_map = obstacle_map
+        if not radius:
+            self.radius = obstacle_map.size
+        else:
+            self.radius = radius
 
     @property
     def visible_cells(self):
@@ -185,7 +192,7 @@ class Isovist:
     
     def visibility_ray(self, startIndex, endIndex, visibility_map):
         """
-        Bresenham's Line Algorithm using np array to detect collision
+        Bresenham's Line Algorithm using np array to detect collision and radius for maximum visibility
         
         Parameters
         ----------
@@ -227,11 +234,14 @@ class Isovist:
                 y = y1
                 for x in range(x1, x2 + incr, incr):
                         if not self.obstacle_map[x,y] < 0:
-                            visibility_map[x,y] = 1
-                            error -= abs(dy) 
-                            if error < 0:
-                                    y += ystep
-                                    error += dx
+                            if not (x1-x)**2 + (y1-y)**2 - self.radius**2 >= 0:
+                                visibility_map[x,y] = 1
+                                error -= abs(dy) 
+                                if error < 0:
+                                        y += ystep
+                                        error += dx
+                            else:
+                                break
                         else:
                                 break
         else:
@@ -250,10 +260,13 @@ class Isovist:
                 y = y1
                 for x in range(x1, x2 + incr, incr):
                         if not self.obstacle_map[y,x] < 0:
-                            visibility_map[y,x] = 1
-                            error -= abs(dy) 
-                            if error < 0:
-                                    y += ystep
-                                    error += dx
+                            if not (x1-x)**2 + (y1-y)**2 - self.radius**2 >= 0:
+                                visibility_map[y,x] = 1
+                                error -= abs(dy) 
+                                if error < 0:
+                                        y += ystep
+                                        error += dx
+                            else:
+                                break
                         else:
                                 break

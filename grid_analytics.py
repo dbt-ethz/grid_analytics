@@ -217,7 +217,7 @@ def analyse_centrality2D(array):
         numpy array with centrality percentage for each cell
     """
     if array.ndim == 2:
-        return _analyse_centrality2D(array)
+        return _analyse_centrality_xy(array)
     
     elif array.ndim == 3:
         raise NotImplementedError
@@ -226,7 +226,7 @@ def analyse_centrality2D(array):
         raise Exception('array has to be 2D or 3D!!')
 
 
-def _analyse_centrality2D(array):
+def _analyse_centrality_xy(array):
     shortest_path = Shortestpath(array * -1)
     return shortest_path.get_centrality(format=1)
 
@@ -248,13 +248,9 @@ def analyse_shadow(array, light_vectors):
     """
     shadow_map = np.zeros(array.shape)
     for vec in light_vectors:
-        shadow_map += _analyse_shadow(array, vec)
+        shadow_map += shadow_from_sun_ray(array, vec)
     
     return shadow_map
-
-
-def _analyse_shadow(array, light_vec):
-    return shadow_from_sun_ray(array, light_vec)
 
 
 def analyse_distances(array, **kwargs):

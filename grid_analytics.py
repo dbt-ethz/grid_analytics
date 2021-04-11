@@ -114,12 +114,12 @@ def analyse_isovist_map2D(array, radius=None, mode='void'):
     >>> isovist_map = analyse_isovist_map2D(array, mode='solid')
     """
     if array.ndim == 2:
-        return _analyse_isovist_map_xy(array, mode, radius)
+        return _analyse_isovist_map_xy(array, radius, mode)
     
     elif array.ndim == 3:
         values = np.full(array.shape, 0)
         for z in range(values.shape[2]):
-            values[:, :, z] = _analyse_isovist_map_xy(array[:, :, z], mode, radius)    
+            values[:, :, z] = _analyse_isovist_map_xy(array[:, :, z], radius, mode)    
         return values
 
     else:
@@ -155,7 +155,7 @@ def analyse_isovist2D(array, radius=None, view_point=[0,0]):
         2D or 3D numpy array with 1 for visible cells, 0 for invisible cells, -1 for solid cells.
     """
     if array.ndim == 2:
-        return _analyse_isovist_map_xy(array, view_point, radius)
+        return _analyse_isovist_map_xy(array, radius, view_point)
     
     elif array.ndim == 3:
         raise NotImplementedError
@@ -164,7 +164,7 @@ def analyse_isovist2D(array, radius=None, view_point=[0,0]):
         raise Exception('array has to be 2D or 3D!!')
 
 
-def _analyse_isovist_xy(array, view_point, radius):
+def _analyse_isovist_xy(array, radius, view_point):
     isovist = Isovist(array * -1, radius)
     return isovist.isovist_from_point(view_point, format=1)
 

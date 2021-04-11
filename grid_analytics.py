@@ -88,7 +88,7 @@ def analyse_neighbours3D(array):
         raise Exception('array has to be 2D or 3D!!')
 
 
-def analyse_isovist_map2D(array, mode='void', radius=None):
+def analyse_isovist_map2D(array, radius=None, mode='void'):
     """
     Analyses 2D visibility for any numpy array >= 2 Dimensions.
     If 3D, XY layers will be analysed
@@ -126,7 +126,7 @@ def analyse_isovist_map2D(array, mode='void', radius=None):
         raise Exception('array has to be 2D or 3D!!')
 
 
-def _analyse_isovist_map_xy(array, mode='void', radius=None):
+def _analyse_isovist_map_xy(array, radius=None, mode='void'):
     isovist = Isovist(array * -1, radius)
 
     if mode == 'void':
@@ -137,7 +137,7 @@ def _analyse_isovist_map_xy(array, mode='void', radius=None):
         return
 
 
-def analyse_isovist2D(array, view_point=[0,0], radius=None):
+def analyse_isovist2D(array, radius=None, view_point=[0,0]):
     """ Analyses 2D visibility for any numpy array >= 2 Dimensions.
     Based on a given viewpoint.
 

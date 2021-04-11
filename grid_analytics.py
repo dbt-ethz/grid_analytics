@@ -137,7 +137,7 @@ def _analyse_isovist_map_xy(array, mode='void', radius):
         return
 
 
-def analyse_isovist2D(array, view_point=[0,0]):
+def analyse_isovist2D(array, view_point=[0,0], radius):
     """ Analyses 2D visibility for any numpy array >= 2 Dimensions.
     Based on a given viewpoint.
 
@@ -155,7 +155,7 @@ def analyse_isovist2D(array, view_point=[0,0]):
         2D or 3D numpy array with 1 for visible cells, 0 for invisible cells, -1 for solid cells.
     """
     if array.ndim == 2:
-        return _analyse_isovist_map_xy(array, view_point)
+        return _analyse_isovist_map_xy(array, view_point, radius)
     
     elif array.ndim == 3:
         raise NotImplementedError

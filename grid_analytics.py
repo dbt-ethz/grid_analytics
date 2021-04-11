@@ -88,7 +88,7 @@ def analyse_neighbours3D(array):
         raise Exception('array has to be 2D or 3D!!')
 
 
-def analyse_isovist_map2D(array, mode='void'):
+def analyse_isovist_map2D(array, radius=None, mode='void'):
     """
     Analyses 2D visibility for any numpy array >= 2 Dimensions.
     If 3D, XY layers will be analysed
@@ -100,6 +100,7 @@ def analyse_isovist_map2D(array, mode='void'):
     mode: string
         string 'void' or 'solid'. 'void' returns isovist map of all void cells.
         'solid' returns isovist map of all solid cells
+
 
     Returns
     -------
@@ -113,20 +114,20 @@ def analyse_isovist_map2D(array, mode='void'):
     >>> isovist_map = analyse_isovist_map2D(array, mode='solid')
     """
     if array.ndim == 2:
-        return _analyse_isovist_map_xy(array, mode)
+        return _analyse_isovist_map_xy(array, mode, radius)
     
     elif array.ndim == 3:
         values = np.full(array.shape, 0)
         for z in range(values.shape[2]):
-            values[:, :, z] = _analyse_isovist_map_xy(array[:, :, z], mode)    
+            values[:, :, z] = _analyse_isovist_map_xy(array[:, :, z], mode, radius)    
         return values
 
     else:
         raise Exception('array has to be 2D or 3D!!')
 
 
-def _analyse_isovist_map_xy(array, mode='void'):
-    isovist = Isovist(array * -1)
+def _analyse_isovist_map_xy(array, radius=None, mode='void'):
+    isovist = Isovist(array * -1, radius)
 
     if mode == 'void':
         return isovist.isovist_map(format=1)
@@ -136,7 +137,7 @@ def _analyse_isovist_map_xy(array, mode='void'):
         return
 
 
-def analyse_isovist2D(array, view_point=[0,0]):
+def analyse_isovist2D(array, radius=None, view_point=[0,0]):
     """ Analyses 2D visibility for any numpy array >= 2 Dimensions.
     Based on a given viewpoint.
 
@@ -154,7 +155,7 @@ def analyse_isovist2D(array, view_point=[0,0]):
         2D or 3D numpy array with 1 for visible cells, 0 for invisible cells, -1 for solid cells.
     """
     if array.ndim == 2:
-        return _analyse_isovist_map_xy(array, view_point)
+        return _analyse_isovist_map_xy(array, view_point, radius)
     
     elif array.ndim == 3:
         raise NotImplementedError
@@ -163,8 +164,8 @@ def analyse_isovist2D(array, view_point=[0,0]):
         raise Exception('array has to be 2D or 3D!!')
 
 
-def _analyse_isovist_xy(array, view_point):
-    isovist = Isovist(array * -1)
+def _analyse_isovist_xy(array, view_point, radius):
+    isovist = Isovist(array * -1, radius)
     return isovist.isovist_from_point(view_point, format=1)
 
 

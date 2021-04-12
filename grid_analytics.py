@@ -5,6 +5,8 @@ from .tools import Shortestpath
 from .tools import shadow_from_sun_ray
 from .tools import get_neighbors2D
 from .tools import get_neighbors3D
+from .tools import calculate_distance_from_solids2D
+from .tools import calculate_voronois_from_solids2D
 
 
 __all__ = [
@@ -15,8 +17,8 @@ __all__ = [
     'analyse_shortestpath2D',
     'analyse_centrality2D',
     'analyse_shadow',
-    'analyse_distances',
-    'analyse_voronoi'
+    'analyse_distances2D',
+    'analyse_voronoi2D'
 ]
 
 
@@ -205,7 +207,7 @@ def _analyse_shortestpath_xy(array, sp, ep):
 
 def analyse_centrality2D(array):
     """
-    Return centrality map
+    Returns centrality map
     
     Parameters
     ----------
@@ -254,12 +256,54 @@ def analyse_shadow(array, light_vectors):
     return shadow_map
 
 
-def analyse_distances(array, **kwargs):
-    raise NotImplementedError
+def analyse_distances2D(array):
+    """
+    Returns the distances of void cells to their closest solid cells 
+    
+    Parameters
+    ----------
+    array: numpy ndarray
+        2D numpy array with 0 for void cells, and >1 for solid cells
+
+    Returns
+    -------
+    numpy array
+        2D numpy array of values representing the index of a solid cell which is closest to a void
+
+    """
+
+    if array.ndim == 2:
+        values = calculate_distance_from_solids2D(array)
+
+        return values
+    
+    elif array.ndim == 3:
+        raise Exception('array has to be 2D!')
 
 
-def analyse_voronoi(array, **kwargs):
-    raise NotImplementedError
+def analyse_voronoi2D(array):
+    """
+    Returns the indices of the solid cell which is closer to every void cell 
+    
+    Parameters
+    ----------
+    array: numpy ndarray
+        2D numpy array with 0 for void cells, and >1 for solid cells
+
+    Returns
+    -------
+    numpy array
+        2D numpy array of values representing the index of a solid cell which is closer every void cell
+
+    """
+
+    if array.ndim == 2:
+        values = calculate_voronois_from_solids2D(array)
+
+        return values
+    
+    elif array.ndim == 3:
+        raise Exception('array has to be 2D!')
 
 
 if __name__ == '__main__':

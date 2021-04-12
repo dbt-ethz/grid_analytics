@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-__author__     = ['Benjamin Dillenburger','Remy Clemente']
+__author__     = ['Benjamin Dillenburger','Remy Clemente', 'Wenqian Yang', 'Eleni Skevaki']
 __copyright__  = 'Copyright 2021 / Digital Building Technologies DBT / ETH Zurich'
 __license__    = 'MIT License'
 __email__      = ['<dbt@arch.ethz.ch>']
 
 import numpy as np
+
+
+__all__ = ['Shortestpath']
+
 
 class Shortestpath:
   """Graph analytic's class to compute betweenness centrality using numpy

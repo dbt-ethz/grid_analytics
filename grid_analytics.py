@@ -263,12 +263,12 @@ def analyse_distances2D(array):
     Parameters
     ----------
     array: numpy ndarray
-        2D numpy array with 0 for void cells, and >1 for solid cells
+        2D or 3d numpy array with 0 for void cells, and >1 for solid cells
 
     Returns
     -------
     numpy array
-        2D numpy array of values representing the index of a solid cell which is closest to a void
+        2D or 3d numpy array of values representing the index of a solid cell which is closest to a void
 
     """
 
@@ -278,7 +278,16 @@ def analyse_distances2D(array):
         return values
     
     elif array.ndim == 3:
-        raise Exception('array has to be 2D!')
+
+        values = np.full(array.shape, 0)
+        for z in range(values.shape[2]):
+            array_slice = array[:, :, z].reshape(array.shape[:2])
+            values[:, :, z] = calculate_distance_from_solids2D(array_slice)   
+
+        return values
+    
+    else:
+        raise Exception('array has to be 2D or 3D!!')
 
 
 def analyse_voronoi2D(array):
@@ -288,12 +297,12 @@ def analyse_voronoi2D(array):
     Parameters
     ----------
     array: numpy ndarray
-        2D numpy array with 0 for void cells, and >1 for solid cells
+        2D or 3d numpy array with 0 for void cells, and >1 for solid cells
 
     Returns
     -------
     numpy array
-        2D numpy array of values representing the index of a solid cell which is closer every void cell
+        2D or 3d numpy array of values representing the index of a solid cell which is closer every void cell
 
     """
 
@@ -303,7 +312,16 @@ def analyse_voronoi2D(array):
         return values
     
     elif array.ndim == 3:
-        raise Exception('array has to be 2D!')
+
+        values = np.full(array.shape, 0)
+        for z in range(values.shape[2]):
+            array_slice = array[:, :, z].reshape(array.shape[:2])
+            values[:, :, z] = calculate_voronois_from_solids2D(array_slice)   
+
+        return values
+    
+    else:
+        raise Exception('array has to be 2D or 3D!!')
 
 
 if __name__ == '__main__':

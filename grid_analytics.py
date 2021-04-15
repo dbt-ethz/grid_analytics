@@ -252,7 +252,6 @@ def analyse_shadow(array, light_vectors):
     shadow_map = np.zeros(array.shape, dtype=int)
     for vec in light_vectors:
         light = np.array(vec, dtype=np.float)
-        light = light * 1
         shadow_map += analyse_shadow_Bresenham_sorted(array, light)
     
     return shadow_map

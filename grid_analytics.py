@@ -2,11 +2,11 @@
 import numpy as np
 from .tools import Isovist
 from .tools import Shortestpath
-from .tools import shadow_from_sun_ray
 from .tools import get_neighbors2D
 from .tools import get_neighbors3D
 from .tools import calculate_distance_from_solids2D
 from .tools import calculate_voronois_from_solids2D
+from .tools import analyse_shadow_Bresenham_sorted
 
 
 __all__ = [
@@ -249,9 +249,9 @@ def analyse_shadow(array, light_vectors):
     numpy ndarray:
         numpy array with 1 as shadow, 0 as not in shadow
     """
-    shadow_map = np.zeros(array.shape)
+    shadow_map = np.zeros(array.shape, dtype=bool)
     for vec in light_vectors:
-        shadow_map += shadow_from_sun_ray(array, vec)
+        shadow_map += analyse_shadow_Bresenham_sorted(array, vec)
     
     return shadow_map
 
